@@ -54,7 +54,6 @@ metadata_CT_all["pango_lineage"][metadata_CT_all["pango_lineage"] == "BA.2.75 (m
 metadata_CT_all["pango_lineage"][metadata_CT_all["pango_lineage"] == "BF.6 (marker override based on Emerging Variants AA substitutions)"] = "BF.6"
 metadata_CT_all["pango_lineage"][metadata_CT_all["pango_lineage"] == "XBB (marker override based on Emerging Variants AA substitutions)"] = "XBB"
 metadata_CT_all["pango_lineage"][metadata_CT_all["pango_lineage"] == "BA.2.13.1 (marker override based on Emerging Variants AA substitutions)"] = "BA.2.13.1"
-metadata_CT_all["pango_lineage"][metadata_CT_all["pango_lineage"] == "BA.2" & metadata_CT_all["Collection.date"] > "2022-12-16"] = "XBB.1.5"
 
 
 
