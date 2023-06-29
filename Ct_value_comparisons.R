@@ -77,34 +77,56 @@ data$ShortLin <- factor(data$ShortLin, levels=c("Other","Alpha","Delta","BA.1","
 
 ##### CT VALUES/ GENOME EQUIVALENTS OVER FULL STUDY PERIOD #####
 
-# Function for determining median
-median.n <- function(x){
-  return(c(y = -12, label = -1*round(median(x),1)))
-} 
-
-# Plot variants over the full study period
+# Using GE/mL (clean)
 data<- data %>% filter(!(is.na(n1_ge_ml)) & !is.na(n1))
 
 ggplot(data,aes(x=ShortLin,y=n1_ge_ml, color=ShortLin))+
-  #geom_hline(yintercept = 25.2,colour = "lightgrey")+
   geom_jitter(alpha = 0.5,size = 0.5, stroke = 2,shape = 21, width = 0.15)+
   geom_boxplot(width=0.5,outlier.shape = NA,colour = "#666666",fill = NA)+
-  labs(title="Variant Ge/mL",x=NULL, y = "Ge/mL (N)")+
+  labs(title="Variant GE/mL",x=NULL, y = "Ge/mL (N)")+
   scale_color_manual(values=c("#515151","#0047ab","#ff6e40","#184e27","#CE4E50","#CAC6EF","#7294D4","#892F2E"))+
-  ylim(0,1e+9)+
-  #geom_signif(comparisons = list(c("BA.1","BA.2")),map_signif_level=T,color="black")+ 
-  #coord_fixed(ratio = 1/10, clip = 'off', expand = TRUE, ylim = c(40,12))+
-  #scale_y_reverse(breaks = seq(10,43,by = 5))+
+  coord_fixed(ratio = 1/2, clip = 'off', expand = TRUE, ylim=c(3e+03, 4e+10))+
   scale_x_discrete()+
-  theme_classic()+theme(legend.position="none",axis.text = element_text(
+  theme_classic()+
+  theme(legend.position="none",axis.text = element_text(
    size = 10, color = "black",face ="bold"), axis.title=element_text(
       size=12, face ="bold"),title=element_text(size=14, face ="bold"),
-    plot.margin = margin(0,0,1,0, "cm"),plot.background = element_blank())#+
-  #stat_summary(fun.data = median.n, geom = "label", colour = "black",
-  #             size = 3, fontface = "italic")#+
-  #geom_text(inherit.aes = TRUE, data = . %>% group_by(`ShortLin`) %>% count(), 
-  #          aes(label = paste0("n=",n), x = `ShortLin`), y = -43, size = 3, fontface = c("italic"),
-  #          check_overlap = TRUE,color="black")
+   plot.margin = margin(0,0,1,0, "cm"),plot.background = element_blank())+
+  stat_summary(fun.data = function(x){
+    return(c(y = 10.6, label =round((10^(median(x))),0)))
+    }, 
+    geom = "label", colour = "black",
+               size = 3, fontface = "italic")+
+  geom_text(inherit.aes = TRUE, data = . %>% group_by(`ShortLin`) %>% count(), 
+                      aes(label = paste0("n=",n), x = `ShortLin`, y=290),size = 3, fontface = c("italic"),
+                      check_overlap = T,color="black")+
+  scale_y_log10()
+
+
+  
+
+#Using Ct values
+ggplot(data,aes(x=ShortLin,y=n1, color=ShortLin))+
+  geom_hline(yintercept = 25.2,colour = "lightgrey")+
+  geom_jitter(alpha = 0.5,size = 0.5, stroke = 2,shape = 21, width = 0.15)+
+  geom_boxplot(width=0.5,outlier.shape = NA,colour = "#666666",fill = NA)+
+  labs(title="Ct Values by Variant",x=NULL, y = "Ge/mL (N)")+
+  scale_color_manual(values=c("#515151","#0047ab","#ff6e40","#184e27","#CE4E50","#CAC6EF","#7294D4","#892F2E"))+
+  coord_fixed(ratio = 1/10, clip = 'off', expand = TRUE, ylim = c(40,12))+
+  scale_y_reverse(breaks = seq(10,43,by = 5))+
+  scale_x_discrete()+
+  theme_classic()+theme(legend.position="none",axis.text = element_text(
+    size = 10, color = "black",face ="bold"), axis.title=element_text(
+      size=12, face ="bold"),title=element_text(size=14, face ="bold"),
+    plot.margin = margin(0,0,1,0, "cm"),plot.background = element_blank())+
+  stat_summary(fun.data = function(x){
+    return(c(y = -12, label = -1*round(median(x),1)))
+  }, 
+  geom = "label", colour = "black",
+             size = 3, fontface = "italic")+
+  geom_text(inherit.aes = TRUE, data = . %>% group_by(`ShortLin`) %>% count(), 
+          aes(label = paste0("n=",n), x = `ShortLin`), y = -44, size = 3, fontface = c("italic"),
+          check_overlap = TRUE,color="black")
 
 
 
@@ -125,7 +147,7 @@ ggplotly(p1)
 # Crossover points :
   # 3-13-2022
   # 6-25-2022
-  # 12-19-2022
+  # 12-17-2022
 cross_overs <- as.Date(c("2022-03-13","2022-06-25","2022-12-17"))
 
 # Define co-circulation periods as 14 days on either side of the crossovers
