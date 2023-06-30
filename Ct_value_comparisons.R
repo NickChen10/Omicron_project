@@ -103,7 +103,29 @@ ggplot(data,aes(x=ShortLin,y=n1_ge_ml, color=ShortLin))+
   scale_y_log10()
 
 
-  
+#Test 
+
+p1 <- ggplot(data,aes(x=ShortLin,y=n1_ge_ml, color=ShortLin))+
+  geom_jitter(alpha = 0.5,size = 0.5, stroke = 2,shape = 21, width = 0.15)+
+  geom_boxplot(width=0.5,outlier.shape = NA,colour = "#666666",fill = NA)+
+  labs(title="Variant GE/mL",x=NULL, y = "Ge/mL (N)")+
+  scale_color_manual(values=c("#515151","#0047ab","#ff6e40","#184e27","#CE4E50","#CAC6EF","#7294D4","#892F2E"))+
+  coord_fixed(ratio = 1/2, clip = 'off', expand = TRUE, ylim=c(3e+03, 4e+10))+
+  scale_x_discrete()+
+  theme_classic()+
+  theme(legend.position="none",axis.text = element_text(
+    size = 10, color = "black",face ="bold"), axis.title=element_text(
+      size=12, face ="bold"),title=element_text(size=14, face ="bold"),
+    plot.margin = margin(0,0,1,0, "cm"),plot.background = element_blank())+
+  geom_text(inherit.aes = TRUE, data = . %>% group_by(`ShortLin`) %>% count(), 
+            aes(label = paste0("n=",n), x = `ShortLin`, y=290),size = 3, fontface = c("italic"),
+            check_overlap = T,color="black")+
+  scale_y_log10()
+
+
+p1 <- p1+geom_label(color="black",fill="white", size=3.5,aes(x=1,label="test",y=1e+07))
+
+#End test
 
 #Using Ct values
 ggplot(data,aes(x=ShortLin,y=n1, color=ShortLin))+
