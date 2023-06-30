@@ -2,7 +2,7 @@
 
 ## Nicholas F. G. Chen, Anne Hahn
 
-**Data availability:**\
+**Data availability:**  
 - GLab_SC2_sequencing_data - available upon request
 
 **License:**
