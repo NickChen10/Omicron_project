@@ -5,4 +5,4 @@
 **Data availability:**  
 - GLab_SC2_sequencing_data - available upon request
 
-**License:**
+**Acknowledgements:**
