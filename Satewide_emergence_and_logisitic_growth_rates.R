@@ -40,7 +40,7 @@ library(forcats)
 path=getwd()
 
 # Read GISAID data for daily lineage frequencies, format date, remove those with missing lineages or duplicated accession IDs
-metadata_CT_all <- read.table(file=paste0(path,"/data/GISAID_metadata.tsv"), sep = "\t", header = TRUE) 
+metadata_CT_all <- read.table(file=paste0(path,"/GitHub/Omicron_Project/Data/GISAID_metadata.tsv"), sep = "\t", header = TRUE) 
 metadata_CT_all$`Collection.date` <- as.Date(metadata_CT_all$`Collection.date`)
 metadata_CT_all <- metadata_CT_all %>%
   filter(Lineage != "") %>%
@@ -66,7 +66,7 @@ metadata_CT_all <- metadata_CT_all[!is.na(metadata_CT_all$`week`),]
 
 
 # Read Pangolin lineage designation and match to WHO variant designations
-names <- read.csv(paste0(path,"/data/Pangolin_variant_names.csv"))
+names <- read.csv(paste0(path,"/GitHub/Omicron_Project/Data/Pangolin_variant_names.csv"))
 metadata_CT_pango <- merge(metadata_CT_all,names[,c("pango_lineage","who_variants")], by = "pango_lineage", all.x = TRUE)
 metadata_CT_pango$who_variants[which(is.na(metadata_CT_pango$who_variants))] <- "Other" #replace NA's with other
 sum(is.na(metadata_CT_pango$pango_lineage)) #no missing lineages
@@ -189,11 +189,16 @@ for(j in 1:length(variants)){
     scale_fill_manual(values=c("#adadad",paste0(colors[j])))+
     ylab("Daily Frequency")+
     xlab("Days Since 5% Emergence")+
-    ggtitle(paste0(variants[j]," Emergence"))+
+    ggtitle(paste0(variants[j]))+
     scale_x_continuous(expand=c(0,0))+
     scale_y_continuous(limits=c(0,100),expand=c(0,0))+
-    theme_bw()+
-    theme(legend.position="none")
+    theme_classic()+
+    theme(
+      legend.position = "none",
+      plot.title = element_text(size = 12, face = "bold"),
+      axis.text.x = element_text(size = 11, vjust = 1, hjust=1),
+      axis.text.y = element_text(size = 12,hjust = 0.5)
+    )
   
   p_data <- ggplot_build(p)$data[[2]] %>% filter(colour != "#adadad") %>% select(x,y) %>% arrange(x)  %>%  filter(y >= 50) 
     #Pull data from the fitted regression and select the first day the fitted line passes 50% (can be changed) 
@@ -220,11 +225,16 @@ BA.4.5_plot <- ggplot(BA.4_5_plot_data, aes(x=as.numeric(Collection.date), y=fre
   scale_fill_manual(values=c("#adadad","#CAC6EF","#7294D4"))+
   ylab("Daily Frequency")+
   xlab("Days Since 5% Emergence")+
-  ggtitle("BA.5 Emergence")+
+  ggtitle("BA.5")+
   scale_x_continuous(expand=c(0,0))+
   scale_y_continuous(limits=c(0,100),expand=c(0,0))+
-  theme_bw()+
-  theme(legend.position="none")
+  theme_classic()+
+  theme(
+    legend.position = "none",
+    plot.title = element_text(size = 12, face = "bold"),
+    axis.text.x = element_text(size = 11, vjust = 1, hjust=1),
+    axis.text.y = element_text(size = 12,hjust = 0.5)
+  )
 
 BA.4.5_plot_extract <- ggplot_build(BA.4.5_plot)$data[[2]] %>% filter(colour == "#7294D4")%>% select(x,y) %>% arrange(x)  %>%  filter(y >= 50) 
 BA.4.5_plot_min <- min(BA.4.5_plot_extract$x) 
@@ -238,13 +248,14 @@ rm(BA.4_5_plot_data,BA.4.5_plot_min,BA.4.5_plot_extract,model_data,p,p_2,p_data,
 
 # Plot together with emergence period text boxes
 arranged_plot<-
-  plot_grid(BA.1_plot+geom_label(color="black",fill="white", size=3.5,aes(x=10,y=96,label=paste("Emergence Period (5-50%):",round(BA.1_emergence,digits = 0),"days")))+xlab("")+ylab("Frequency"),
-          BA.2_plot+geom_label(color="black",fill="white",size=3.5,aes(x=25,y=96,label=paste("Emergence Period (5-50%):",round(BA.2_emergence,digits = 0),"days")))+xlab("")+ylab(""),
-          BA.4.5_plot+geom_label(color="black",fill="white",size=3.5,aes(x=39,y=96,label=paste("Emergence Period (5-50%):",round(BA.4.5_emergence,digits = 0),"days")))+ylab("Frequency"),
-          XBB.1_plot+geom_label(color="black",fill="white",size=3.5,aes(x=54,y=96,label=paste("Emergence Period (5-50%):",round(XBB.1_emergence,digits = 0),"days")))+ylab(""), 
+  plot_grid(BA.1_plot+geom_label(color="black",fill="white", size=3.5,aes(x=10,y=95,label=paste("Emergence Period (5-50%):",round(BA.1_emergence,digits = 0),"days"),fontface="bold"))+xlab("")+ylab("Frequency"),
+          BA.2_plot+geom_label(color="black",fill="white",size=3.5,aes(x=25,y=95,label=paste("Emergence Period (5-50%):",round(BA.2_emergence,digits = 0),"days"),fontface="bold"))+xlab("")+ylab(""),
+          BA.4.5_plot+geom_label(color="black",fill="white",size=3.5,aes(x=39,y=95,label=paste("Emergence Period (5-50%):",round(BA.4.5_emergence,digits = 0),"days"),fontface="bold"))+ylab("Frequency"),
+          XBB.1_plot+geom_label(color="black",fill="white",size=3.5,aes(x=54,y=95,label=paste("Emergence Period (5-50%):",round(XBB.1_emergence,digits = 0),"days"),fontface="bold"))+ylab(""), 
           nrow=2,ncol=2)
 rm(BA.1_emergence,BA.1_plot,BA.2_emergence,BA.2_plot,BA.4.5_emergence,BA.4.5_plot,XBB.1_emergence,XBB.1_plot,p)
 
+#ggsave(filename="arranged_1.png", width=28,height=15,units = "cm")
 
 
 ##### LOGISTIC GROWTH RATES ######
@@ -269,8 +280,15 @@ for(x in 1:length(variants)){
     ylab("Probability of Belonging to Variant Category")+
     xlab("Days Since 5% Emergence")+
     ggtitle(paste0(variants[x]))+
-    scale_y_continuous(expand=c(0,0))+
-    theme_classic()
+    scale_y_continuous(expand=c(0,0),limits=c(0,1))+
+    theme_classic()+
+    theme(
+      legend.position = "none",
+      plot.title = element_text(size = 12, face = "bold"),
+      axis.text.x = element_text(size = 11, vjust = 1, hjust=1),
+      axis.text.y = element_text(size = 11,hjust = 0.5),
+      axis.title.y = element_text(size = 9,hjust = 0.5)
+    )
   
   assign(paste0(variants[x],"_log_plot"),p) 
 }
@@ -303,8 +321,15 @@ BA.4.5_log_plot <- ggplot()+
   ylab("Probability of Belonging to Variant Category")+
   xlab("Days Since 5% Emergence")+
   ggtitle("BA.5")+
-  scale_y_continuous(expand=c(0,0))+
-  theme_classic()
+  scale_y_continuous(expand=c(0,0),limits=c(0,1))+
+  theme_classic()+
+  theme(
+    legend.position = "none",
+    plot.title = element_text(size = 12, face = "bold"),
+    axis.text.x = element_text(size = 11, vjust = 1, hjust=1),
+    axis.text.y = element_text(size = 11,hjust = 0.5),
+    axis.title.y = element_text(size = 9,hjust = 0.5)
+  )
 
 rm(BA.4_data,BA.5_data)
 
@@ -329,14 +354,21 @@ log_box_plot <- ggplot(box_plot_data, aes(x=forcats::fct_rev(variant), y=slope, 
   geom_errorbar(aes(ymin=lower,ymax=upper),width=0.3,size=0.78)+
   scale_fill_manual(values=c("#184E27","#CE4E50","#CAC6EF","#7294D4","#892F2E"))+
   ylab("Slope")+
-  xlab("Variant Category")+
+  xlab("")+
   theme_bw()+
   ggtitle("")+
   theme(legend.position = "none")+
   coord_flip()+
-  theme_classic()
+  theme_classic()+
+  theme(
+    legend.position = "none",
+    plot.title = element_text(size = 12, face = "bold"),
+    axis.text.x = element_text(size = 11 ),
+    axis.text.y = element_text(size = 12,face = "bold")
+  )
 
 
-arranged_log_box_plots <- plot_grid(arranged_log_regressions, log_box_plot, rel_widths = c(1,0.6),ncol=2,nrow=1,labels=c("A","B"))
+arranged_log_box_plots <- plot_grid(arranged_log_regressions, log_box_plot, rel_widths = c(1,0.6),ncol=2,nrow=1)
 
+#ggsave(filename="arranged_2.png", width=28,height=18,units = "cm")
 

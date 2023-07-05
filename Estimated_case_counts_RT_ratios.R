@@ -39,6 +39,9 @@ ggsave(filename="barplot.png", width=14,height=14,units = "cm")
 
   
 # RT ratio plots
+
+#ggplot(data, aes (x=days,y=Rt, color=variant))+geom_line()+theme_classic()
+
 # Filter to periods of Rt overlap and calculate ratios
 p2_data <- data %>% select(days,variant, Rt) %>% filter(!is.na(Rt)) %>% spread(key=variant,value=Rt)%>% 
   mutate(BA1_Delta =  `Omicron (BA.1)`/`Delta`, BA2_BA1 = `Omicron (BA.2)`/`Omicron (BA.1)`, BA4_BA2 = `Omicron (BA.4)`/`Omicron (BA.2)`,
