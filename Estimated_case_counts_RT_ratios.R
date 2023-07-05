@@ -5,12 +5,13 @@
 library(tidyverse)
 library(ggplot2)
 library(forcats)
+library(ggforce)
 
 ##### DATA FORMATTING #####
 path=getwd()
 
 # Read COVIDestim data for Connecticut   
-data <- read.csv(file=paste0(path,"/data/SARS-CoV-2 effective reproduction number in Connecticut since November 2021.csv")) 
+data <- read.csv(file=paste0(path,"/GitHub/Omicron_Project/data/SARS-CoV-2 effective reproduction number in Connecticut since November 2021.csv")) 
 data$days <- as.Date(data$days)
 
 
@@ -24,12 +25,18 @@ p1_data<-data %>% filter(variant %in% variants)%>% group_by(variant) %>% summari
 ggplot(p1_data, aes(variant))+
   geom_bar(stat="identity",aes(x=variant,y=n,fill=variant))+ 
   scale_fill_manual(values=c("#184e27","#CE4E50","#CAC6EF","#7294D4","#892F2E"))+
-  scale_y_continuous(breaks = seq(0,1600000,by = 200000),limits=c(0,1600000),expand=c(0,0))+
-  ylab("Cumulative Estaimted Cases")+
-  xlab("Variant")+
+  scale_y_continuous(breaks = seq(0,1600000,by = 100000),limits=c(0,1600000),expand=c(0,0),labels = function(x) format(x, scientific = TRUE))+
+  ylab("Cumulative Estimated Cases")+
+  xlab("")+
+  ggtitle("Cumulative Estimated Cases in Connecticut")+
   theme_classic()+
-  theme(legend.position = "none")
-  
+  theme(legend.position = "none",
+        plot.title = element_text(size = 12,hjust = -0.2, face = "bold"),
+        axis.text.x = element_text(size = 9,angle = 45, vjust = 1, hjust=1, face = "bold"),
+        axis.text.y = element_text(size = 11,hjust = 0.5),
+        )
+ggsave(filename="barplot.png", width=14,height=14,units = "cm")
+
   
 # RT ratio plots
 # Filter to periods of Rt overlap and calculate ratios
@@ -57,16 +64,16 @@ ggplot(p2_data, aes(x=fct_rev(pair),y=ratio,color=pair,group=pair))+
   scale_y_continuous(limits = c(0.8,2),breaks=seq(0,2,0.5))+
   ylab("Rt ratio")+
   xlab("")+
+  ggtitle("Rt Ratios of Variant Emergence")+
   theme_classic()+
   theme(legend.position="none",
-        axis.text = element_text(
-          size = 10, color = "black",face ="bold"), 
-        axis.title=element_text(
-          size=12, face ="bold"),
-        title=element_text(size=14, face ="bold"),
+        axis.text = element_text(size = 10, color = "black",face ="bold"), 
+        axis.title=element_text(size=12, face ="bold"),
+        title=element_text(size=12, face ="bold"),
         plot.margin = margin(0,2,0,0,"cm"),
-    plot.background = element_blank())+
+        plot.background = element_blank())+
   geom_text(inherit.aes = TRUE, data = . %>% group_by(pair) %>% mutate(median=((median(ratio)-1)*100)) %>% filter(!duplicated(median)), 
               aes(label = paste0(round(median,digits=2),"%"), x = pair), y = 2.1, size = 4, fontface = c("bold"),
               check_overlap = TRUE,color="black")
   
+#ggsave(filename="rt_ratios.png", units = "cm")
