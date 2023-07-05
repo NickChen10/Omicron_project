@@ -27,6 +27,8 @@ data <- data %>%
   ))
 
 data <- data %>% group_by(ShortLin,week)%>% summarise(freq=sum(freq))
+
+# To clean up data issues, convert frequencies below 2% to 0% for plotting purposes 
 data$freq[which(data$freq <=0.02)] <-0
 
 
@@ -52,9 +54,9 @@ ggplot(data,aes(x=`week`,y=freq*100, group = `ShortLin`, color = `ShortLin`)) +
   scale_x_date(expand=c(0,0),date_breaks="3 month", date_labels="%b-%Y") +
   theme_classic() +
   theme(
-    plot.title = element_text(size = 15,hjust = -0.2, face = "bold"),
+    plot.title = element_text(size = 15, face = "bold"),
     axis.text.x = element_text(size = 11,angle = 45, vjust = 1, hjust=1, face = "bold"),
     axis.text.y = element_text(size = 12,hjust = 0.5)
   )
 
-#ggsave(filename="frequenciesCT.png", units = "cm")
+#ggsave(filename="frequenciesCT.png", width=20,height=10,units = "cm")
