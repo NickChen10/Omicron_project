@@ -9,13 +9,12 @@ library(snakecase)
 library(plotly)
 library(ggsignif)
 library(cowplot)
-library(ggview)
 library(patchwork)
 
 
 ##### DATA FORMATTING #####
 
-#Read in data (remove directory at the end)
+#Read in data
 data <- read_excel("C:/Users/nicho/GLab Dropbox/Nicholas Chen/Quantiative_Epi/XBB Project/GLab_SC2_sequencing_data.xlsx", 
                    col_types = c("text", "text", "numeric", 
                                  "text", "date", "text", "text", "date", 
@@ -479,7 +478,7 @@ overview <- ggplot(variants_combined, aes(x=collection_date, y=n1, color=ShortLi
   scale_fill_manual(values = c(OmiCols))+
   scale_color_manual(values = c(OmiCols))
 overview
-ggsave(filename="CToverview.png", units = "cm", width = 30, height = 10, scale =0.7)
+#ggsave(filename="CToverview.png", units = "cm", width = 30, height = 10, scale =0.7)
 
 
 # Plot scatterplots together
@@ -489,5 +488,5 @@ ggsave(filename="CToverview.png", units = "cm", width = 30, height = 10, scale =
    variants_graphs_1st_half[[4]]+ variants_graphs_2nd_half[[4]]+ 
    variants_graphs_1st_half[[5]]+  variants_graphs_2nd_half[[1]]  +
    plot_layout(ncol = 2))
-ggsave(filename="variantCT.png", units = "cm", scale = 1.4)
+#ggsave(filename="variantCT.png", units = "cm", scale = 1.4)
 
