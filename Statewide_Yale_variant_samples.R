@@ -46,7 +46,7 @@ names(yale_data) <- to_any_case(names(yale_data),case="snake")
 yale_data[,c("collection_date","extraction_pcr_date")] <- lapply(yale_data[,c("collection_date","extraction_pcr_date")],as.Date,format="%m/%d/%Y")
 
 # Filter to only sequenced data and dates of interest
-data_clean <- data_clean %>% filter(grepl('connecticut', Filter)) %>% 
+yale_data <- yale_data %>% filter(grepl('connecticut', Filter)) %>% 
   filter(between(collection, 
                  as.Date('2022-01-01'), as.Date('2023-01-30'))) 
 
@@ -128,7 +128,7 @@ ggplot(data, aes(x = as.Date(`week`), y = `n`, fill = as.factor(`ShortLin`), all
   scale_color_manual(values=c(OmiCols))+
   coord_fixed(ratio = 0.075, xlim = c(as.Date("2022-01-01"),as.Date("2023-01-20")))
 
-ggsave(filename="cases_CT.png", units = "cm")
+#ggsave(filename="cases_CT.png", units = "cm")
 
 
 
@@ -160,3 +160,21 @@ ggplot(lineages, aes(x = as.Date(`week`), y = `n`, fill = as.factor(`ShortLin`),
   coord_fixed(ratio = 0.4, xlim = c(as.Date("2022-01-01"),as.Date("2023-01-20")))
 
 #ggsave(filename="yale_cases.png", units = "cm", scale = 1.2)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
