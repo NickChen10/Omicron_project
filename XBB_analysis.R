@@ -36,45 +36,61 @@ mod1 <- lm(yale_n_1_fam~collection_date, data)
 summary(mod1) # Insignificant
 
 # Visualize 
-ggplot(data, aes(x=collection_date,y=yale_n_1_fam))+
-  geom_point()+
+xbb_over_time <-ggplot(data, aes(x=collection_date,y=yale_n_1_fam))+
+  geom_point(alpha = 0.6,size = 0.5, stroke = 2,shape = 21,color="#892F2E")+
+  ggtitle("XBB.1 Ct values over time")+
   theme_classic()+
   labs(
-    x="collection date",
-    y="n1"
-  )
+    x="Collection Date",
+    y="Ct N"
+  )+
+  theme(axis.text = element_text(
+    size = 10, color = "black",face ="bold"), axis.title=element_text(
+      size=12, face ="bold"),title=element_text(size=12, face ="bold"))
 
 # Test for homoscedasticity and model the residuals
 bptest(mod1, studentize = T) # Not significant = homosecasticity 
 data$predicted <- predict(mod1)
 data$residuals <- resid(mod1)
-ggplot(data = data, aes(x = predicted, y = residuals)) +
-  geom_point() +
-  geom_hline(yintercept = 0, col = "red") + # add horizontal line at 0
+xbb_residuals<-ggplot(data = data, aes(x = predicted, y = residuals)) +
+  geom_point(alpha = 0.6,size = 0.5, stroke = 2,shape = 21,color="#892F2E") +
+  geom_hline(linewidth=1,yintercept = 0, alpha=0.6,col = "black") + # add horizontal line at 0
   labs(title = "Residuals vs. Fitted Values",
        x = "Fitted Values", y = "Residuals")+
-  theme_classic()
+  theme_classic()+
+  theme(axis.text = element_text(
+    size = 10, color = "black",face ="bold"), axis.title=element_text(
+      size=12, face ="bold"),title=element_text(size=12, face ="bold"))
 
 
-ggplot(data = data, aes(x = residuals)) +
+xbb_residuals_hist<-ggplot(data = data, aes(x = residuals)) +
   geom_histogram(bins = 15,
-                 col = "black",
-                 fill = "blue",
-                 alpha = 0.2,
+                 color="black",
+                 fill = "#892F2E",
+                 alpha = 0.6,
                  closed = "left",
                  na.rm = TRUE) +
+  scale_y_continuous(expand=c(0,0))+
   labs(title = "Frequency Histogram of Model Residuals",
        x = "Residuals", y = "Count")+
-  theme_classic()
+  theme_classic()+
+  theme(axis.text = element_text(
+    size = 10, color = "black",face ="bold"), axis.title=element_text(
+      size=12, face ="bold"),title=element_text(size=12, face ="bold"))
 
-ggplot(data, aes(sample = residuals)) +
-  geom_qq() +
-  geom_qq_line(col = "blue") +
+xbb_qq_plot<-ggplot(data, aes(sample = residuals)) +
+  geom_qq(alpha = 0.6,size = 0.5, stroke = 2,shape = 21,color="#892F2E") +
+  geom_qq_line(alpha=0.6,linewidth=1,col = "black") +
   labs(title = "Normal Q-Q Plot of Model Residuals",
        x = "Theoretical Quantiles", y = "Sample Quantiles")+
-  theme_classic()
+  theme_classic()+
+  theme(axis.text = element_text(
+    size = 10, color = "black",face ="bold"), axis.title=element_text(
+      size=12, face ="bold"),title=element_text(size=12, face ="bold"))
 
+plot_grid(xbb_over_time,xbb_residuals,xbb_residuals_hist,xbb_qq_plot,ncol=2)
 # No evidence for the ct values changing over time 
+#ggsave(filename="xbb_linearity.png", width=24,height=14,units = "cm")
 
 
 ###### COVARIATES #####
