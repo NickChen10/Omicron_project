@@ -282,12 +282,16 @@ for(i in 1:5){ #Run for loop once to generate 5 models at the 5 week duration
   #Plotting names
   p_names <- list("Delta Emergence","BA.1 Emergence","BA.2 Emergence","BA.4/5 Emergence","XBB.1 Emergence")
   
+
+  #Plot colors 
+  
+  cols<- c("#ff6e40","#184e27","#CE4E50","#7294D4","#892F2E")
   
   #Forest plots
   p <- ggplot(plot_data, aes(y = Index, x = OR)) +
-    geom_point(shape = 18, size = 5) +  
-    geom_errorbarh(aes(xmin = LL, xmax = UL), height = 0.25,size=1) +
-    geom_vline(xintercept = 1, color = "red", linetype = "dashed", cex = 1, alpha = 0.8) +
+    geom_point(shape = 18, size = 5,color=cols[[i]]) +  
+    geom_errorbarh(aes(xmin = LL, xmax = UL), height = 0.25,size=1, color=cols[[i]]) +
+    geom_vline(xintercept = 1, color = "black", linetype = "dashed", cex = 1, alpha = 0.5) +
     scale_y_continuous(name = "", breaks=1:3, labels = plot_data$label, trans = "reverse") +
     scale_x_log10()+
     xlab("Odds Ratio (95% CI)") + 
