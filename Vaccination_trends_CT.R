@@ -2,6 +2,12 @@
 #Author: Nicholas Chen
 
 
+#Load required packages
+library(tidyverse)
+library(ggplot2)
+library(viridis)
+
+
 
 ##### DATA FORMATTING #####
 # https://data.cdc.gov/Vaccinations/COVID-19-Vaccination-Trends-in-the-United-States-N/rh2h-3yt2
@@ -19,9 +25,9 @@ cdc$`Vaccination Status` <-factor(cdc$`Vaccination Status`, levels = c("One Dose
 
 ##### PLOTTING #####
 
-ggplot(data = cdc, aes(x=Date, y=`Percent Coverage`,color=`Vaccination Status`,fill=`Vaccination Status`, alpha= `Vaccination Status`)) + 
+ggplot(data = cdc, aes(x=Date, y=`Percent Coverage`,color=`Vaccination Status`,fill=`Vaccination Status`)) + 
   geom_area(position = "identity")+
-  geom_line(size=1,alpha=1)+
+  geom_line(size=1)+
   scale_x_date(breaks="1 month", expand=c(0,0))+
   geom_hline(yintercept=95,linetype="dashed", size=1)+
   scale_y_continuous(expand = c(0,0), limits = c(0,100))+
@@ -36,8 +42,8 @@ ggplot(data = cdc, aes(x=Date, y=`Percent Coverage`,color=`Vaccination Status`,f
     axis.title.y = element_text(face="bold"),
     legend.box.background = element_rect(colour = NA),
     legend.title = element_text(face="bold"))+
-  scale_color_manual(values = c("#00008b","#46ACC8","#ffd500", "#E58601", "#B40F20"))+
-  scale_fill_manual(values = c("#00008b","#46ACC8","#ffd500", "#E58601", "#B40F20"))+
-  scale_alpha_manual(values = c(0.3,0.4,0.7,0.7,0.8))
+  scale_color_viridis_d(direction=-1)+
+  scale_fill_viridis_d(direction=-1)#+
+  #scale_alpha_manual(values = c(0.3,0.4,0.7,0.7,0.8))
 
-ggsave(filename="vax_trends_CT.png",width=24,height=10,units = "cm")
+ggsave(filename="vax_trends_CT_2.png",width=24,height=10,units = "cm")
