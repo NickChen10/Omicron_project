@@ -42,8 +42,10 @@ ggplot(data = cdc, aes(x=Date, y=`Percent Coverage`,color=`Vaccination Status`,f
     axis.title.y = element_text(face="bold"),
     legend.box.background = element_rect(colour = NA),
     legend.title = element_text(face="bold"))+
+  #scale_color_manual(values = c("#00008b","#46ACC8","#ffd500", "#E58601", "#B40F20"))+
+  #scale_fill_manual(values = c("#00008b","#46ACC8","#ffd500", "#E58601", "#B40F20"))+
+  #scale_alpha_manual(values = c(0.3,0.4,0.7,0.7,0.8))
   scale_color_viridis_d(direction=-1)+
   scale_fill_viridis_d(direction=-1)#+
-  #scale_alpha_manual(values = c(0.3,0.4,0.7,0.7,0.8))
 
-ggsave(filename="vax_trends_CT_2.png",width=24,height=10,units = "cm")
+#ggsave(filename="vax_trends_CT_2.png",width=24,height=10,units = "cm")
