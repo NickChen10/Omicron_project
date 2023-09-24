@@ -294,7 +294,7 @@ p3 <- ggplot(interval_3,aes(x=ShortLin,y=n1, color=ShortLin))+
 
 
 (p1 + p2 + p3) #EDIT: For the same size plots with varying sized boxplots 
-(p1 + p2 + p3 + plot_layout(widths=c(1,1.5,1))) #EDIT: For the same size boxplots + different size plots 
+(p1 + plot_spacer() + p2 + plot_spacer() + p3 + plot_layout(widths=c(1,0.1,1.5,0.1,1))) #EDIT: For the same size boxplots + different size plots 
 ggsave(filename="CT_comparisons.png", units = "cm", width = 35, height = 20)
 
 
