@@ -376,8 +376,8 @@ variants_graphs_1st_half <- list()
 # Plot the first half of the figure 
 OmiCols <- c("BA.1" = "#74875B", 
              "BA.1.1"= "#184E27",
-             "BA.2" = "#FB7069",
-             "BA.2.12.1" = "#CE4E50",
+             "BA.2" = "#CE4E50",
+             "BA.2.12.1" = "#FB7069",
              "BA.4" = "#CAC6EF",
              "BA.4.6" = "#CAC6EF",
              "BA.5" = "#7294D4",
@@ -461,6 +461,12 @@ variants_combined <- rbind(variant_data[["BA.1"]],
 overview <- ggplot(variants_combined, aes(x=collection_date, y=n1, color=ShortLin, group=ShortLin)) +
   geom_hline(yintercept = 25,colour = "lightgrey")+
   geom_point(size=0.2,alpha=0.7, color="white",show.legend=FALSE)+
+  geom_rect(inherit.aes = F,data = data.frame(xmin=bounds[1],xmax=bounds[2],ymin=20,ymax=30), 
+            aes(xmin=xmin,xmax=xmax,ymin=ymin,ymax=ymax),fill="orange",alpha=0.1)+#EDIT: First emergence period 
+  geom_rect(inherit.aes = F,data = data.frame(xmin=bounds[3],xmax=bounds[4],ymin=20,ymax=30), 
+            aes(xmin=xmin,xmax=xmax,ymin=ymin,ymax=ymax),fill="orange",alpha=0.1)+#EDIT: Second emergence period 
+  geom_rect(inherit.aes = F,data = data.frame(xmin=bounds[5],xmax=bounds[6],ymin=20,ymax=30), 
+            aes(xmin=xmin,xmax=xmax,ymin=ymin,ymax=ymax),fill="orange",alpha=0.1)+#EDIT: First emergence period 
   geom_smooth(method = "lm", se=T, aes(group=ShortLin, fill=ShortLin),size=1.5, alpha=0.1,show.legend=FALSE)+
   scale_y_reverse()+
   coord_cartesian(ylim = c(29, 22))+
@@ -477,6 +483,7 @@ overview <- ggplot(variants_combined, aes(x=collection_date, y=n1, color=ShortLi
   )+
   scale_fill_manual(values = c(OmiCols))+
   scale_color_manual(values = c(OmiCols))
+  
 overview
 #ggsave(filename="CToverview.png", units = "cm", width = 30, height = 10, scale =0.7)
 
@@ -488,5 +495,5 @@ overview
    variants_graphs_1st_half[[4]]+ variants_graphs_2nd_half[[4]]+ 
    variants_graphs_1st_half[[5]]+  variants_graphs_2nd_half[[1]]  +
    plot_layout(ncol = 2))
-#ggsave(filename="variantCT.png", units = "cm", scale = 1.4)
+#ggsave(filename="variantCT.png", units = "cm", width = 30, height = 10, scale =0.9)
 
