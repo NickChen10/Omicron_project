@@ -4,6 +4,7 @@
 #Load packages
 
 
+
 packages = c("dplyr","tidyr","ggplot2","RColorBrewer",
              "plotly","DT","data.table",
              "stats","ggpubr","stringr")
@@ -280,6 +281,7 @@ for(x in 1:length(variants)){
     ylab("Probability of Belonging to Variant Category")+
     xlab("Days Since 5% Emergence")+
     ggtitle(paste0(variants[x]))+
+    scale_x_continuous(limits=c(0,100),expand = c(0,0))+
     scale_y_continuous(expand=c(0,0),limits=c(0,1))+
     theme_classic()+
     theme(
@@ -321,6 +323,7 @@ BA.4.5_log_plot <- ggplot()+
   ylab("Probability of Belonging to Variant Category")+
   xlab("Days Since 5% Emergence")+
   ggtitle("BA.5")+
+  scale_x_continuous(limits=c(0,100),expand = c(0,0))+ #EDIT: made the x axes uniform for figure 2B
   scale_y_continuous(expand=c(0,0),limits=c(0,1))+
   theme_classic()+
   theme(
