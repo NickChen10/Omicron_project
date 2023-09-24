@@ -225,7 +225,7 @@ p1 <- ggplot(interval_1,aes(x=ShortLin,y=n1, color=ShortLin))+
   geom_jitter(alpha = 0.5,size = 0.5, stroke = 2,shape = 21, width = 0.15)+
   geom_boxplot(width=0.5,outlier.shape = NA,colour = "#666666",fill = NA)+
   labs(title="Emergence Period 1",x=NULL, y = "Ct (N)")+
-  scale_color_manual(values=c("#74875B","#CE4E50"))+
+  scale_color_manual(values=c("#184E27","#CE4E50"))+
   geom_signif(comparisons = list(c("BA.1","BA.2")),map_signif_level=T,color="black")+ 
   #coord_fixed(ratio = 1/9.5, clip = 'off', expand = TRUE, ylim = c(40,12))+
   coord_cartesian(clip = 'off', expand = TRUE, ylim = c(40,12))+
@@ -387,8 +387,8 @@ variants_graphs_1st_half <- list()
 
 
 # Plot the first half of the figure 
-OmiCols <- c("BA.1" = "#74875B", 
-             "BA.1.1"= "#184E27",
+OmiCols <- c("BA.1" = "#184E27", 
+             "BA.1.1"= "#74875B",
              "BA.2" = "#CE4E50",
              "BA.2.12.1" = "#FB7069",
              "BA.4" = "#CAC6EF",
