@@ -225,17 +225,20 @@ p1 <- ggplot(interval_1,aes(x=ShortLin,y=n1, color=ShortLin))+
   geom_jitter(alpha = 0.5,size = 0.5, stroke = 2,shape = 21, width = 0.15)+
   geom_boxplot(width=0.5,outlier.shape = NA,colour = "#666666",fill = NA)+
   labs(title="Emergence Period 1",x=NULL, y = "Ct (N)")+
-  scale_color_manual(values=c("#74875B","#FB7069"))+
+  scale_color_manual(values=c("#74875B","#CE4E50"))+
   geom_signif(comparisons = list(c("BA.1","BA.2")),map_signif_level=T,color="black")+ 
-  coord_fixed(ratio = 1/9.5, clip = 'off', expand = TRUE, ylim = c(40,12))+
+  #coord_fixed(ratio = 1/9.5, clip = 'off', expand = TRUE, ylim = c(40,12))+
+  coord_cartesian(clip = 'off', expand = TRUE, ylim = c(40,12))+
   scale_y_reverse(breaks = seq(10,43,by = 5))+
   scale_x_discrete()+
   theme_classic()+theme(legend.position="none",axis.text = element_text(
     size = 10, color = "black",face ="bold"), axis.title=element_text(
       size=12, face ="bold"),title=element_text(size=14, face ="bold"),
     plot.margin = margin(0,0,1,0, "cm"),plot.background = element_blank())+
-  stat_summary(fun.data = median.n, geom = "label", colour = "black",
-               size = 3, fontface = "italic")+
+  stat_summary(fun.data = function(x){
+    return(c(y = -12, label = -1*round(median(x),1)))}, 
+  geom = "label", colour = "black",
+  size = 3, fontface = "italic")+
   geom_text(inherit.aes = TRUE, data = . %>% group_by(`ShortLin`) %>% count(), 
             aes(label = paste0("n=",n), x = `ShortLin`), y = -43, size = 3, fontface = c("italic"),
             check_overlap = TRUE,color="black")
@@ -246,17 +249,21 @@ p2 <- ggplot(interval_2,aes(x=ShortLin,y=n1, color=ShortLin))+
   geom_jitter(alpha = 0.5,size = 0.5, stroke = 2,shape = 21, width = 0.15)+
   geom_boxplot(width=0.5,outlier.shape = NA,colour = "#666666",fill = NA)+
   labs(title="Emergence Period 2",x=NULL, y = NULL)+
-  scale_color_manual(values=c("#FB7069","#7294D4","#CAC6EF"))+  
-  geom_signif(comparisons = list(c("BA.5","BA.2")),map_signif_level=T,color="black",test="t.test")+ 
-  coord_fixed(ratio = 1/6.9, clip = 'off', expand = TRUE, ylim = c(40,12))+
+  scale_color_manual(values=c("#CE4E50","#7294D4","#CAC6EF"))+  
+  geom_signif(comparisons = list(c("BA.5","BA.2")),map_signif_level=T,color="black"
+              ,test="t.test")+ 
+  #coord_fixed(ratio = 1/6.9, clip = 'off', expand = TRUE, ylim = c(40,12))+
+  coord_cartesian(clip = 'off', expand = TRUE, ylim = c(40,12))+
   scale_y_reverse(breaks = seq(10,43,by = 5))+
   scale_x_discrete()+
   theme_classic()+theme(legend.position="none",axis.text = element_text(
     size = 10, color = "black",face ="bold"), axis.title=element_text(
       size=12, face ="bold"),title=element_text(size=14, face ="bold"),
     plot.margin = margin(0,0,1,0, "cm"),plot.background = element_blank())+
-  stat_summary(fun.data = median.n, geom = "label", colour = "black",
-               size = 3, fontface = "italic")+
+  stat_summary(fun.data = function(x){
+    return(c(y = -12, label = -1*round(median(x),1)))}, 
+    geom = "label", colour = "black",
+    size = 3, fontface = "italic")+
   geom_text(inherit.aes = TRUE, data = . %>% group_by(`ShortLin`) %>% count(), 
             aes(label = paste0("n=",n), x = `ShortLin`), y = -43, size = 3, fontface = c("italic"),
             check_overlap = TRUE,color="black")
@@ -269,20 +276,26 @@ p3 <- ggplot(interval_3,aes(x=ShortLin,y=n1, color=ShortLin))+
   labs(title="Emergence Period 3",x=NULL, y = NULL)+
   scale_color_manual(values=c("#7294D4","#892F2E"))+
   geom_signif(comparisons = list(c("BA.5","XBB.1")),map_signif_level=T,color="black",test="t.test")+ 
-  coord_fixed(ratio = 1/10, clip = 'off', expand = TRUE, ylim = c(40,12))+
+  #coord_fixed(ratio = 1/10, clip = 'off', expand = TRUE, ylim = c(40,12))+
+  coord_cartesian(clip = 'off', expand = TRUE, ylim = c(40,12))+
   scale_y_reverse(breaks = seq(10,43,by = 5))+
   scale_x_discrete()+
   theme_classic()+theme(legend.position="none",axis.text = element_text(
     size = 10, color = "black",face ="bold"), axis.title=element_text(
       size=12, face ="bold"),title=element_text(size=14, face ="bold"),
     plot.margin = margin(0,0,1,0, "cm"),plot.background = element_blank())+
-  stat_summary(fun.data = median.n, geom = "label", colour = "black",
-               size = 3, fontface = "italic")+
+  stat_summary(fun.data = function(x){
+    return(c(y = -12, label = -1*round(median(x),1)))}, 
+    geom = "label", colour = "black",
+    size = 3, fontface = "italic")+
   geom_text(inherit.aes = TRUE, data = . %>% group_by(`ShortLin`) %>% count(), 
             aes(label = paste0("n=",n), x = `ShortLin`), y = -43, size = 3, fontface = c("italic"),
             check_overlap = TRUE, color="black")
 
-plot_grid(p1,p2,p3,nrow=1)
+
+(p1 + p2 + p3) #EDIT: For the same size plots with varying sized boxplots 
+(p1 + p2 + p3 + plot_layout(widths=c(1,1.5,1))) #EDIT: For the same size boxplots + different size plots 
+ggsave(filename="CT_comparisons.png", units = "cm", width = 35, height = 20)
 
 
 
