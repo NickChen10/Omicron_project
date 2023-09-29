@@ -8,6 +8,8 @@ library(lubridate)
 library(ggeffects)
 library(snakecase)
 library(cowplot)
+library(table1)
+
 
 
 
@@ -142,7 +144,6 @@ old_dataset_clean$collection_date <- as.Date(old_dataset_clean$collection_date, 
 # Combine datsets  
 data <- rbind(old_dataset_clean, metadata_clean)
 rm(old_dataset,old_dataset_clean,metadata,metadata_clean)
-
 
 
 ##### MODELING ######
@@ -309,6 +310,8 @@ for(i in 1:5){ #Run for loop once to generate 5 models at the 5 week duration
           axis.title.x = element_text(size = 12, colour = "black",face="bold")) 
   
   assign(paste0(p_names[[i]],"_plot"),p)  
+  assign(paste0(p_names[[i]],"_model"),model)  
+  
   
 } #Ignore warnings
 
@@ -322,3 +325,52 @@ plot_grid(`Delta Emergence_plot`+xlab(""),
 #ggsave("forest_plots.png",width=30, height=20, units = "cm")
 
 
+
+##### TABLE #####
+table <- data
+table <- table %>% filter(age>=5)
+
+for(i in 1:nrow(table)){
+  if(table$age[i] %in% c(5:17)){
+    table$age_cat[i] <- "5-17"
+  } else if(table$age[i] %in% c(18:39)){
+    table$age_cat[i] <- "18-39"
+  } else if(table$age[i] %in% c(40:64)){
+    table$age_cat[i] <- "40-64"
+  } else if(table$age[i]>=65){
+    table$age_cat[i] <- "65+"
+  }
+}
+
+table$gender[which(!(table$gender %in% c("F","M", NA)))] <- "Other"
+table$gender <- factor(table$gender, levels=c("F","M","Other"))
+table$age_cat <- factor(table$age_cat, levels=c("5-17","18-39","40-64","65+"))
+table$vax_status_revised <- factor(table$vax_status_revised, levels=c("non_breakthrough","one_dose_breakthrough","complete_breakthrough_>=5_months","complete_breakthrough_<5_months"))
+
+table1(~age_cat + gender | vax_status_revised,data=table)
+
+
+models<- list(`Delta Emergence_model`,`BA.1 Emergence_model`,`BA.2 Emergence_model`,`BA.4/5 Emergence_model`,`XBB.1 Emergence_model`)
+
+
+
+
+for(x in 1:9){
+    model <- `Delta Emergence_model`
+    est<-exp(summary(model)$coef[x])
+    ll<-exp(summary(model)$coef[x]-(1.96*summary(model)$coef[x,2]))
+    ul<-exp(summary(model)$coef[x]+(1.96*summary(model)$coef[x,2]))
+    assign(paste0(x,"_est"),est)
+    assign(paste0(x,"_ll"),ll)
+    assign(paste0(x,"_ul"),ul)  
+}
+ 
+model_results <- data.frame(name=c("int","one dose", ">5 months", "<5 months",
+                                   "time","5-17","40-64","65+","gender"),
+                            est=c(`1_est`,`2_est`,`3_est`,`4_est`,`5_est`,
+                                  `6_est`,`7_est`,`8_est`,`9_est`), 
+                            ll=c(`1_ll`,`2_ll`,`3_ll`,`4_ll`,`5_ll`,
+                                 `6_ll`,`7_ll`,`8_ll`,`9_ll`),
+                            ul=c(`1_ul`,`2_ul`,`3_ul`,`4_ul`,`5_ul`,
+                                 `6_ul`,`7_ul`,`8_ul`,`9_ul`))
+#It's getting caught up on the one that has a missing exp cat?
