@@ -356,7 +356,7 @@ models<- list(`Delta Emergence_model`,`BA.1 Emergence_model`,`BA.2 Emergence_mod
 
 
 for(x in 1:9){
-    model <- `Delta Emergence_model`
+    model <- `XBB.1 Emergence_model`
     est<-exp(summary(model)$coef[x])
     ll<-exp(summary(model)$coef[x]-(1.96*summary(model)$coef[x,2]))
     ul<-exp(summary(model)$coef[x]+(1.96*summary(model)$coef[x,2]))
@@ -365,6 +365,7 @@ for(x in 1:9){
     assign(paste0(x,"_ul"),ul)  
 }
  
+
 model_results <- data.frame(name=c("int","one dose", ">5 months", "<5 months",
                                    "time","5-17","40-64","65+","gender"),
                             est=c(`1_est`,`2_est`,`3_est`,`4_est`,`5_est`,
@@ -373,4 +374,4 @@ model_results <- data.frame(name=c("int","one dose", ">5 months", "<5 months",
                                  `6_ll`,`7_ll`,`8_ll`,`9_ll`),
                             ul=c(`1_ul`,`2_ul`,`3_ul`,`4_ul`,`5_ul`,
                                  `6_ul`,`7_ul`,`8_ul`,`9_ul`))
-#It's getting caught up on the one that has a missing exp cat?
+
