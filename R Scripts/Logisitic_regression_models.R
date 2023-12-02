@@ -326,8 +326,12 @@ plot_grid(`Delta Emergence_plot`+xlab(""),
 
 
 
-##### TABLE #####
+##### DATA TABLES #####
+
+# Pulling data from the logistic regresion models for supplementary tables
 table <- data
+
+# Applying the same data filters and formatting
 table <- table %>% filter(age>=5)
 
 for(i in 1:nrow(table)){
@@ -350,22 +354,24 @@ table$vax_status_revised <- factor(table$vax_status_revised, levels=c("non_break
 table1(~age_cat + gender | vax_status_revised,data=table)
 
 
-models<- list(`Delta Emergence_model`,`BA.1 Emergence_model`,`BA.2 Emergence_model`,`BA.4/5 Emergence_model`,`XBB.1 Emergence_model`)
+#models<- list(`Delta Emergence_model`,`BA.1 Emergence_model`,`BA.2 Emergence_model`,`BA.4/5 Emergence_model`,`XBB.1 Emergence_model`)
 
 
 
-
+# Format and pull model results
+# Note: Due to the different model structures, the number of parameters needs to be updated across models (e.g. BA.4/5 model is missing gender)
 for(x in 1:9){
-    model <- `XBB.1 Emergence_model`
+    model <- `XBB.1 Emergence_model` # Need to update this for each model 
     est<-exp(summary(model)$coef[x])
-    ll<-exp(summary(model)$coef[x]-(1.96*summary(model)$coef[x,2]))
+    ll<-exp(summary(model)$coef[x]-(1.96*summary(model)$coef[x,2])) 
     ul<-exp(summary(model)$coef[x]+(1.96*summary(model)$coef[x,2]))
     assign(paste0(x,"_est"),est)
     assign(paste0(x,"_ll"),ll)
     assign(paste0(x,"_ul"),ul)  
 }
  
-
+# Further formatting model results 
+# Note: Due to the different model structures, the names for each value will need to be updated (e.g. BA.4/5 model is missing gender)
 model_results <- data.frame(name=c("int","one dose", ">5 months", "<5 months",
                                    "time","5-17","40-64","65+","gender"),
                             est=c(`1_est`,`2_est`,`3_est`,`4_est`,`5_est`,
@@ -377,19 +383,23 @@ model_results <- data.frame(name=c("int","one dose", ">5 months", "<5 months",
 
 
 
-#### Pulling out vaccination statuses for each interval
+# Pulling out vaccination statuses for each interval
 vax_table <- data %>% filter(age>=5)
 vax_table$gender[which(!(vax_table$gender %in% c("M","F")))] <- NA
 vax_table <-vax_table %>% filter(!(is.na(town)) & !(is.na(gender)) & !(is.na(Interval)) & Interval != 4)
-interval_4_vax_data <- data %>% filter(!(is.na(town)) & age>=5 & Interval ==4)
+interval_4_vax_data <- data %>% filter(!(is.na(town)) & age>=5 & Interval ==4) #ignore gender for BA.4/5 model
 vax_table <- rbind(vax_table,interval_4_vax_data) 
 
-#vax_table_export <- vax_table %>% group_by(Interval,vax_status) %>% summarize(count = n())
+# Format for exporting
 vax_table_export <- vax_table %>% select(interval = Interval, model_strata = vax_status_revised,vax_doses = vax_status)%>% arrange(interval)
 vax_table_export$vax_doses <- str_replace(vax_table_export$vax_doses,"_Breakthrough","")
 vax_table_export$vax_doses <- str_replace(vax_table_export$vax_doses,"_Dose","")
 vax_table_export$vax_doses[which(vax_table_export$vax_doses == "Non")] <- "None"
+
+# Summarized table
 vax_table_export_sum <- vax_table_export %>% group_by(interval,model_strata,vax_doses) %>% summarize(n=n())
 
-write.csv(vax_table_export, "vaccination_status_by_interval.csv")
-write.csv(vax_table_export_sum, "vaccination_status_by_interval_summary.csv")
+
+# Export results
+#write.csv(vax_table_export, "vaccination_status_by_interval.csv")
+#write.csv(vax_table_export_sum, "vaccination_status_by_interval_summary.csv")
