@@ -514,7 +514,7 @@ overview
 
 
 ###### DATA TABLE GENERATION #####
-# Want the median Ct values for each variant in the above plot for the first and last week (using the variants_combined dataset)
+# Median Ct values for each variant in the above plot for the first and last week (using the variants_combined dataset)
 table_data <- variants_combined %>% select(ShortLin,n1,collection_date)
 
 
@@ -535,9 +535,9 @@ for(i in 1:length(unique(table_data$ShortLin))){
   assign(paste0(unique(table_data$ShortLin)[i],"_linear_model"),model_output)
 }
 
+# BA.5, BQ.1.1, and BA.2.12.1 all have incomplete last weeks (only one or two samples)
+# For these variants, take the second to last week
 
-
-#Issues with BA.5 and BQ.1.1 and BA.2.12.1 - do these manually 
 BA.5 <- table_data %>% filter(ShortLin=="BA.5")
 start_BA.5 <-BA.5 %>% filter(week==min(BA.5$week))
 end_BA.5 <- BA.5 %>% filter(week=="2022-12-05")
@@ -570,19 +570,14 @@ first_week_XBB.1.5 <- summary(start_XBB.1.5$n1)
 last_week_XBB.1.5 <- summary(end_XBB.1.5$n1)
 XBB.1.5_iqr <- data.frame(rbind(first_week_XBB.1.5,last_week_XBB.1.5))%>% mutate(ShortLin="XBB.1.5")
 
-
+# Export Median and IQR Ct values
 export <- rbind(BA.1_iqr,BA.1.1_iqr,BA.2_iqr,BA.2.12.1_iqr,BA.4.6_iqr,BA.5_iqr,BQ.1.1_iqr,XBB.1.5_iqr)%>%
   select(ShortLin,q_1 = X1st.Qu.,med=Median,mean=Mean,q_3=X3rd.Qu.)
 
-
+# Export linear model results
 export_2 <- rbind(BA.1_linear_model,BA.1.1_linear_model,BA.2_linear_model,BA.2.12.1_linear_model,BA.4.6_linear_model,BA.5_linear_model,BQ.1.1_linear_model, XBB.1.5_linear_model)
 
 
 #write.csv(export,"median_ct_values.csv")
 #write.csv(export_2,"linear_regression_values.csv")
 
-test <-lm(n1~collection_date,XBB.1.5)
-range(fitted(test))
-test_2 <- ggplot(x, aes(y=n1,x=collection_date))+
-  geom_point()  +
-  geom_smooth(method="lm")
